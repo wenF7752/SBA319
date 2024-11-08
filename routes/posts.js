@@ -1,19 +1,16 @@
-const express = require('express');
+import express from 'express';
+import Post from '../models/post.js';
+
 const router = express.Router();
-
-
-
 
 router.get('/', async (req, res) => {
     try {
-        const comments = await Comment.find();
-        res.json(comments);
+        const posts = await Post.find();
+        res.json(posts);
     } catch (err) {
         console.error(err.message);
         res.status(500).send('Server Error');
     }
 });
 
-
-
-module.exports = router;
+export default router;
