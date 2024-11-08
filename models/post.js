@@ -1,13 +1,14 @@
-import express from 'express';
 import mongoose from 'mongoose';
 
 const postSchema = new mongoose.Schema({
     title: { type: String, required: true },
     content: { type: String, required: true },
-    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+    user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true } // Reference to the User model
 });
 
-const Post = mongoose.model('Post', postSchema);
+// Add an index on the `user` field to optimize queries by user
+postSchema.index({ user: 1 });
 
+const Post = mongoose.model('Post', postSchema);
 
 export default Post;

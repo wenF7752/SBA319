@@ -44,6 +44,56 @@ router.post('/register', async (req, res) => {
     }
 });
 
+router.put('/:id', async (req, res) => {
+    const { id } = req.params;
+    const { username, email, password } = req.body;
 
+    try {
+        // Find the user by ID and update the fields as needed
+        const updatedUser = await User.findByIdAndUpdate(
+            id,
+            { username, email, password }, // Fields to update
+            { new: true, runValidators: true } // Options: return the updated document and run validators
+        );
+
+        // If user not found
+        if (!updatedUser) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        // Return the updated user data (excluding password in a real application for security)
+        res.json({
+            _id: updatedUser._id,
+            username: updatedUser.username,
+            email: updatedUser.email,
+            password: updatedUser.password,
+        });
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+});
+
+
+// DELETE route to remove a user by ID
+router.delete('/:id', async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        // Find the user by ID and delete it
+        const deletedUser = await User.findByIdAndDelete(id);
+
+        // If user not found
+        if (!deletedUser) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        // Return a success message
+        res.json({ message: 'User deleted successfully' });
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+});
 
 export default router;
